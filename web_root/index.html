@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<title>Relay Steurung</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+	    <div id="wrapper">
+            <h1>Relay Steurung</h1>
+		    <table>
+			 <tr>
+				 <td>DSTAR Repeater (Relay 0)</td>
+				 <td>
+					  <button class="button boot relais-button" data-relais="0" data-duration="1" data-action="keyPress">Boot</button>
+					  <button class="button poweroff  relais-button" data-relais="0" data-duration="3" data-action="keyPress">Poweroff</button>
+				 </td>
+			 <tr>
+			 <tr>
+				 <td>Random Hardware (Relay 1)</td>
+				 <td>
+					  <button class="button boot relais-button" data-relais="1" data-state="1" data-action="switch">On</button>
+					  <button class="button poweroff relais-button" data-relais="1" data-state="0" data-action="switch">Off</button>
+				 </td>
+			 <tr>
+		   </table>
+		</div>
+		<script src="jquery-3.7.1.min.js"></script>
+		<script src="relays.js"></script>
+	</body>
+</html>

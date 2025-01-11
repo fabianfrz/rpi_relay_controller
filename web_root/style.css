@@ -1,0 +1,14 @@
+h1 {
+	text-align: center;
+}
+
+#wrapper {
+	margin: auto;
+	width: 600px;
+
+table {
+    float:right;
+	width:100%;
+	max-width: 400px;
+	height:300px;
+}
