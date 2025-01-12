@@ -1,0 +1,14 @@
+[Unit]
+Description=Relay GPIO Controller Daemon
+After=network.target
+Requires=network-online.target
+
+[Service]
+Type=notify
+User=root
+Group=root
+ExecStart=/opt/relays
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target

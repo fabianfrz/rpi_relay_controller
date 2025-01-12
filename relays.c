@@ -1,5 +1,8 @@
 #include "mongoose.h"   // To build, run: cc main.c mongoose.c
 /*#include <wiringPi.h>*/
+#ifdef enable_systemd
+#include <systemd/sd-daemon.h>
+#endif
 #define HIGH 1
 #define LOW 0
 // dummy implementation
@@ -98,6 +101,9 @@ int main(void) {
     struct mg_mgr mgr;
     mg_mgr_init(&mgr);
     mg_http_listen(&mgr, "http://[::]:8000", ev_handler, NULL);
+#ifdef enable_systemd
+    sd_notify(0, "READY=1");
+#endif
     for (;;) {
         mg_mgr_poll(&mgr, 1000);
     }
