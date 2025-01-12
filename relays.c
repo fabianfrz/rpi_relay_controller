@@ -1,8 +1,6 @@
 #include "mongoose.h"
 #include <wiringPi.h>
-#ifdef enable_systemd
 #include <systemd/sd-daemon.h>
-#endif
 
 char* headers_json = "Content-Type: application/json\r\n";
 char* format_error = "{\"ok\": false, \"error\": \"%s\"}";
@@ -90,9 +88,7 @@ int main(void) {
     struct mg_mgr mgr;
     mg_mgr_init(&mgr);
     mg_http_listen(&mgr, "http://[::]:8000", ev_handler, NULL);
-#ifdef enable_systemd
     sd_notify(0, "READY=1");
-#endif
     for (;;) {
         mg_mgr_poll(&mgr, 1000);
     }

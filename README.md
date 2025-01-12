@@ -4,7 +4,7 @@ A little source code to control relays on a relay board.
 install requirements
 
 ```bash
-apt install llvm clang make build-essential
+apt install llvm clang make build-essential libsystemd-dev
 ```
 
 Follow the build and install instructions here: https://github.com/WiringPi/WiringPi/
