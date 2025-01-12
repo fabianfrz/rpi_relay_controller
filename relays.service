@@ -7,8 +7,9 @@ Requires=network-online.target
 Type=notify
 User=root
 Group=root
-ExecStart=/opt/relays
+ExecStart=/opt/relays/relays
 Restart=on-abnormal
+WorkingDirectory=/opt/relays
 
 [Install]
 WantedBy=multi-user.target
