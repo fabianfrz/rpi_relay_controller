@@ -1,17 +1,8 @@
-#include "mongoose.h"   // To build, run: cc main.c mongoose.c
-/*#include <wiringPi.h>*/
+#include "mongoose.h"
+#include <wiringPi.h>
 #ifdef enable_systemd
 #include <systemd/sd-daemon.h>
 #endif
-#define HIGH 1
-#define LOW 0
-// dummy implementation
-int digitalRead(int i) {
-	return HIGH;
-}
-int digitalWrite(int i, int j) {
-	return HIGH;
-}
 
 char* headers_json = "Content-Type: application/json\r\n";
 char* format_error = "{\"ok\": false, \"error\": \"%s\"}";
@@ -87,12 +78,10 @@ void ev_handler(struct mg_connection *c, int ev, void *ev_data) {
 }
 
 void prepareWPI() {
-	/*
     wiringPiSetupGpio();
     for (int i = 0; i < relayOutputCount; i++) {
         pinMode(relayOutputs[i], OUTPUT);
     }
-	*/
 }
 
 
@@ -109,3 +98,4 @@ int main(void) {
     }
   return 0;
 }
+
