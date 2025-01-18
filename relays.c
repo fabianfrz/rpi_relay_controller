@@ -27,6 +27,7 @@ int min(int a, int b) {
     return a < b ? a : b;
 }
 
+bool verifyHash(const char* password, const char* hash); 
 // Parse HTTP requests, return authenticated user or NULL
 static struct user *getuser(struct mg_http_message *hm) {
   char user[256], pass[256];
@@ -35,22 +36,28 @@ static struct user *getuser(struct mg_http_message *hm) {
   if (user[0] != '\0' && pass[0] != '\0') {
     u = users;
     while (u != NULL) {
-      if (strcmp(user, u->user->name) == 0 && strcmp(pass, u->user->pass) == 0) {
+	    printf("Comparing user %s to %s, password %s to %s\n", user, u->user->name, pass, u->user->pass);
+      if (strcmp(user, u->user->name) == 0 && verifyHash(pass, u->user->pass) == 0) {
         return u->user;
       }
+      u = u->next;
     }
   }
   return NULL;
 }
 
-bool verifyHash(char* password, char* hash) {
+bool verifyHash(const char* password, const char* hash) {
     if (strncmp("$argon2id", hash, 9) == 0) {
-        return argon2id_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
+	    printf("id\n");
+        return argon2id_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else if (strncmp("$argon2i", hash, 8) == 0) {
-        return argon2i_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
+	    printf("i\n");
+        return argon2i_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else if (strncmp("$argon2d", hash, 8) == 0) {
-        return argon2d_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
+	    printf("d\n");
+        return argon2d_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else {
+        printf("the hash %s is not valid!\n", hash);
         return false; // the hash is not valid
     }
 }
@@ -115,7 +122,7 @@ void ev_handler(struct mg_connection *c, int ev, void *ev_data) {
           // WWW-Authenticate: Bearer
           mg_http_reply(c,
                         401, "Content-Type: application/json\r\n"
-                             "WWW-Authenticate: realm=\"Relays\", charset=\"UTF-8\"\r\n",
+                             "WWW-Authenticate: Basic realm=\"Relays\", charset=\"UTF-8\"\r\n",
                         "{\"ok\": false}");
           return;
         }
