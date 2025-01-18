@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <argon2.h>
 #include <math.h>
+#include <string.h>
 
 char* headers_json = "Content-Type: application/json\r\n";
 char* format_error = "{\"ok\": false, \"error\": \"%s\"}";
@@ -42,19 +43,18 @@ static struct user *getuser(struct mg_http_message *hm) {
   return NULL;
 }
 
-/*
 bool verifyHash(char* password, char* hash) {
-    if (hash.rfind("$argon2id") == 0) {
+    if (strncmp("$argon2id", hash, 9) == 0) {
         return argon2id_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
-    } else if (hash.rfind("$argon2i") == 0) {
+    } else if (strncmp("$argon2i", hash, 8) == 0) {
         return argon2i_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
-    } else if (hash.rfind("$argon2d") == 0) {
+    } else if (strncmp("$argon2d", hash, 8) == 0) {
         return argon2d_verify(hash.c_str(), password.c_str(), password.size()) == ARGON2_OK;
     } else {
         return false; // the hash is not valid
     }
 }
-*/
+
 void ev_get_set_relays(struct mg_connection *c, struct mg_http_message *hm, struct mg_str* caps) {
 	int relay_id;
 	if (!mg_str_to_num(caps[0], 10, &relay_id, sizeof(relay_id))) {
@@ -109,6 +109,16 @@ void ev_list_relays(struct mg_connection *c, struct mg_http_message *hm) {
 void ev_handler(struct mg_connection *c, int ev, void *ev_data) {
     if (ev == MG_EV_HTTP_MSG) {
         struct mg_http_message *hm = (struct mg_http_message *) ev_data;
+
+        struct user *u = getuser(hm);
+        if (u == NULL) {
+          // WWW-Authenticate: Bearer
+          mg_http_reply(c,
+                        401, "Content-Type: application/json\r\n"
+                             "WWW-Authenticate: realm=\"Relays\", charset=\"UTF-8\"\r\n",
+                        "{\"ok\": false}");
+          return;
+        }
         struct mg_str caps[2];
         if (mg_match(hm->uri, mg_str("/api/relays/*"), caps)) {
 			ev_get_set_relays(c, hm, caps);
