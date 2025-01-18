@@ -36,9 +36,12 @@ static struct user *getuser(struct mg_http_message *hm) {
   if (user[0] != '\0' && pass[0] != '\0') {
     u = users;
     while (u != NULL) {
-	    printf("Comparing user %s to %s, password %s to %s\n", user, u->user->name, pass, u->user->pass);
-      if (strcmp(user, u->user->name) == 0 && verifyHash(pass, u->user->pass) == 0) {
-        return u->user;
+      if (strcmp(user, u->user->name) == 0) {
+	if (verifyHash(pass, u->user->pass)) {
+          return u->user;
+	} else {
+		printf("password for user '%s' is incorrect!\n", user);
+	}
       }
       u = u->next;
     }
@@ -48,13 +51,10 @@ static struct user *getuser(struct mg_http_message *hm) {
 
 bool verifyHash(const char* password, const char* hash) {
     if (strncmp("$argon2id", hash, 9) == 0) {
-	    printf("id\n");
         return argon2id_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else if (strncmp("$argon2i", hash, 8) == 0) {
-	    printf("i\n");
         return argon2i_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else if (strncmp("$argon2d", hash, 8) == 0) {
-	    printf("d\n");
         return argon2d_verify(hash, password, strlen(password)) == ARGON2_OK;
     } else {
         printf("the hash %s is not valid!\n", hash);
@@ -162,6 +162,8 @@ void readUserDatabase() {
             printf("Line is not readable: %s", buf);
 	    exit(1);
 	}
+	memset(user, 0, 256);
+	memset(password, 0, 256);
 	strncpy(user, buf, min(passwordOffset - buf, sizeof(user) - 1));
 	strncpy(password, passwordOffset + 1, sizeof(password) - 1);
         struct usernode* un = malloc(sizeof(struct usernode));
