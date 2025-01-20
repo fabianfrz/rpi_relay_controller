@@ -12,3 +12,13 @@ table {
 	max-width: 400px;
 	height:300px;
 }
+
+.red {
+	width: 20px;
+	background-color: red;
+}
+
+.green {
+	width: 20px;
+	background-color: green;
+}

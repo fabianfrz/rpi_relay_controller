@@ -10,6 +10,24 @@ function callBackend(relais, enabled, success) {
 	});
 }
 
+function updateStatus() {
+	$.ajax({
+	    type: "GET",
+	    url: `/api/relays`,
+	    success: function(res) {
+		    const states = res["states"] || [];
+		    states.forEach((element, id) => {
+			    const indicator = document.getElementById('status_indicator_' + id);
+			    if (indicator) {
+				    indicator.classList.remove('red');
+				    indicator.classList.remove('green');
+				    indicator.classList.add(element == 1 ? 'green' : 'red');
+			    }
+		    })
+	    },
+	    dataType: "json"
+	});
+}
 
 
 $(() => {
@@ -30,4 +48,5 @@ $(() => {
 			    console.log(`Unknown action: ${data["action"]}`)
 		}
 	});
+	setInterval(updateStatus, 1_000);
 });
