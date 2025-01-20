@@ -98,7 +98,7 @@ void ev_list_relays(struct mg_connection *c, struct mg_http_message *hm) {
 		char buf[1024] = {0};
 		buf[0] = '[';
 		for (int i = 0; i < relayOutputCount; i++) {
-			pos += sprintf(buf + pos, "%s%d", i == 1 ? "," : "", digitalRead(relayOutputs[i]));
+			pos += sprintf(buf + pos, "%s%d", i > 0 ? "," : "", digitalRead(relayOutputs[i]));
 		}
 		buf[pos++] = ']';
 		buf[pos++] = 0;
