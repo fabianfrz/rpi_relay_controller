@@ -7,6 +7,12 @@ Please refer the argon2 documentation on how to create those hashes.
 
 Since this does not aim to be a perfect solution, please be aware of hardcoded config properties and static html und not fully implemented features.
 
+Download submodules
+
+```bash
+git submodules init
+git submodules update
+```
 
 install requirements
 
@@ -14,16 +20,20 @@ install requirements
 apt install llvm clang make build-essential libsystemd-dev
 ```
 
-Follow the build and install instructions here: https://github.com/WiringPi/WiringPi/
+Follow the build and install instructions of [WiringPi](https://github.com/WiringPi/WiringPi/)
 
 make this project it
 ```bash
 make
 ```
 
-
-
 and install it
 ```bash
 sudo make install
 ```
+
+Open your browser and open the page http://raspberry-pi:8000/.
+
+You should see a page that looks like this:
+
+![Web Interface](.github/images/relays_gui.png)
