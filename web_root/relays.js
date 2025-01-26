@@ -21,7 +21,7 @@ function updateStatus() {
 			    if (indicator) {
 				    indicator.classList.remove('red');
 				    indicator.classList.remove('green');
-				    indicator.classList.add(element == 1 ? 'green' : 'red');
+				    indicator.classList.add(element ? 'green' : 'red');
 			    }
 		    })
 	    },

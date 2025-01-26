@@ -79,12 +79,12 @@ void ev_get_set_relays(struct mg_connection *c, struct mg_http_message *hm, stru
 		return;
 	}
 	if (mg_strcasecmp(mg_str("POST"), hm->method) == 0) {
-		digitalWrite(relayOutputs[relay_id], state ? HIGH : LOW);
+		digitalWrite(relayOutputs[relay_id], state ? LOW : HIGH);
 		mg_http_reply(c, 200, headers_json, "{\"ok\": true}");
 		return;
 	} else if (mg_strcasecmp(mg_str("GET"), hm->method) == 0) {
 		int value = digitalRead(relayOutputs[relay_id]);
-		mg_http_reply(c, 200, headers_json, "{\"ok\": true, \"state\": %s}", value == HIGH ? "true" : "false");
+		mg_http_reply(c, 200, headers_json, "{\"ok\": true, \"state\": %s}", value == LOW ? "true" : "false");
 		return;
 	} else {
 		mg_http_reply(c, 405, headers_json, format_error, "Unsupported HTTP method");
@@ -98,7 +98,7 @@ void ev_list_relays(struct mg_connection *c, struct mg_http_message *hm) {
 		char buf[1024] = {0};
 		buf[0] = '[';
 		for (int i = 0; i < relayOutputCount; i++) {
-			pos += sprintf(buf + pos, "%s%d", i > 0 ? "," : "", digitalRead(relayOutputs[i]));
+			pos += sprintf(buf + pos, "%s%s", i > 0 ? "," : "", digitalRead(relayOutputs[i]) == HIGH ? "false": "true" );
 		}
 		buf[pos++] = ']';
 		buf[pos++] = 0;
@@ -142,7 +142,7 @@ void prepareWPI() {
     wiringPiSetupGpio();
     for (int i = 0; i < relayOutputCount; i++) {
         pinMode(relayOutputs[i], OUTPUT);
-	digitalWrite(relayOutputs[i], LOW);
+	digitalWrite(relayOutputs[i], HIGH);
     }
 }
 
